@@ -13,10 +13,12 @@ class CreateLessonUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('lesson_user', function (Blueprint $table) {
+        Schema::create('lesson_users', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lesson_id')->constrained();
             $table->boolean('watched')->default(false);
+            $table->timestamps();
         });
     }
 
