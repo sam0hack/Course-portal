@@ -1,66 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Documentation: Achievement System in Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
+This project implements an achievement system in Laravel, designed to track user activities like writing comments and watching lessons. Using an event-driven approach and the repository design pattern, the system provides a robust, scalable, and modular architecture. Additional features include Docker support via Laravel Sail and an integrated mail service.
 
-## About Laravel
+## Features
+- **Achievement Tracking**: Monitors user activities and unlocks achievements based on predefined criteria.
+- **Badge System**: Awards badges to users based on the number of achievements unlocked.
+- **Event-Driven Architecture**: Utilizes Laravel events to handle achievement unlocking and badge awarding.
+- **Repository Design Pattern**: Offers flexibility and modularity, making future expansions more manageable.
+- **Docker Support**: Simplifies local setup and ensures consistency across different environments using Laravel Sail.
+- **Mail Service Integration**: Verifies that mail-related events are triggered and handled correctly.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Setup and Local Development
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
+- Docker and Docker Compose
+- PHP >= 8.0
+- Composer
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Running the Application Locally
 
-## Learning Laravel
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-repository-url.git
+   cd your-repository-directory
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. **Start Laravel Sail**:
+   Laravel Sail is a light-weight command-line interface for interacting with Laravel's default Docker development environment. To start the Docker containers for the application, run:
+   ```bash
+   ./vendor/bin/sail up
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+3. **Install Dependencies**:
+   While the Docker container is running, install the PHP dependencies:
+   ```bash
+   ./vendor/bin/sail composer install
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. **Run Migrations**:
+   Set up the database by running the migrations:
+   ```bash
+   ./vendor/bin/sail artisan migrate
+   ```
 
-## Laravel Sponsors
+5. **Seed the Database** (Optional):
+   Populate the database with initial data (if seeders are provided):
+   ```bash
+   ./vendor/bin/sail artisan db:seed --class=SEEDERCLASSNAME
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+6. **Access the Application**:
+   The application should now be running on `http://localhost`.
 
-### Premium Partners
+### Running Tests
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+To ensure the reliability of the application, a suite of tests has been provided. Run these tests to verify that all components of the system are functioning as expected:
 
-## Contributing
+```bash
+./vendor/bin/sail artisan test
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Understanding the Achievement System
 
-## Code of Conduct
+### Events and Listeners
+- **AchievementUnlocked Event**: Fired when a user unlocks an achievement. Payload includes `achievement_name` and `user`.
+- **BadgeUnlocked Event**: Fired when a user earns a new badge. Payload includes `badge_name` and `user`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Endpoints
+- **GET `users/{user}/achievements`**: Returns user achievements and badges, including:
+    - `unlocked_achievements`: Array of unlocked achievements by name.
+    - `next_available_achievements`: Next achievable milestones.
+    - `current_badge`: User's current badge.
+    - `next_badge`: Next badge achievable.
+    - `remaining_to_unlock_next_badge`: Achievements needed for the next badge.
 
-## Security Vulnerabilities
+### Mail Notifications - Mailpit
+- Integrated mail notifications confirm the correct functioning of achievement-related events.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Repository Design Pattern
+- Enhances maintainability and scalability.
+- Facilitates collaborative development.
 
-## License
+## Docker and Laravel Sail
+- Ensures a consistent development environment.
+- Simplifies the setup process.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+This project adheres to best practices in Laravel development, offering a robust and scalable solution for achievement tracking.
