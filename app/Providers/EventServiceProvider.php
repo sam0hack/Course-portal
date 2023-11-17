@@ -18,6 +18,13 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        \App\Events\CommentWritten::class => [\App\Listeners\CheckAchievementForComment::class],
+        \App\Events\LessonWatched::class => [\App\Listeners\CheckAchievementForLesson::class],
+
+        \App\Events\AchievementUnlockedEvent::class => [\App\Listeners\NotifyAchievementUnlocked::class],
+        \App\Events\BadgeUnlockedEvent::class => [\App\Listeners\NotifyBadgeUnlocked::class]
+
+
     ];
 
     /**
